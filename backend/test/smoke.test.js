@@ -1,5 +1,7 @@
 const app = require('../app')
 const mockserver = require('supertest');
+const {MongoMemoryServer} = require('mongodb-memory-server');
+const mongoose = require('mongoose');
 
 function sum(a, b) {
     return a + b;
@@ -25,6 +27,25 @@ test('/random endpoint gives back status 404', async () => {
 
     // then
     expect(response.status).toBe(404)
+});
+test('mongo inmemory server is working', async () => {
+    // given
+    const mongod = await MongoMemoryServer.create();
+    const uri = mongod.getUri();
+    const connection = await mongoose.connect(uri);
+
+    const Cat = mongoose.model('Cat', { name: String });
+
+    const kitty = new Cat({ name: 'Zildjian' });
+
+    // when
+    await kitty.save();
+
+    // then
+    const catInDb = await Cat.findOne();
+    expect(catInDb.name).toBe("Zildjian")
+    await connection.disconnect();
+    await mongod.stop();
 });
 
 
