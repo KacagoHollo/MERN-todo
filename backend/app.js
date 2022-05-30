@@ -26,11 +26,11 @@ app.use('/api/dashboards', dashboard);
 
 
 app.get("/api/public", (req, res) => {
-  console.log("public")
+  // console.log("public")
   res.send("Hello public")
 })
 app.get("/api/private", auth({block: true}), (req, res) => {
-  console.log('private')
+  // console.log('private')
   res.send(`Hello private id: ${res.locals.userId}`)
   
 })

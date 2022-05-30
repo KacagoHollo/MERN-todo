@@ -1,6 +1,6 @@
 
 const auth = (middlewareParams) => (req, res, next) => {
-        console.log("Authentication");
+        // console.log("Authentication");
         // let a;
         // console.log(a.b.c)
         const userId = req.header('authorization');
