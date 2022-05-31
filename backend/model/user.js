@@ -13,8 +13,16 @@ const dashboardSchema = new mongoose.Schema({
 });
 
 const userSchema = new mongoose.Schema({ // authenticateToken
-    username: {type: String, unique: true, required: true}, // !!!
-    googleId: {type: String, required: true, unique: true}, // validation
+    username: {type: String}, // !!!
+    // googleId: {type: String, required: true, unique: true}, // validation
+    providers: {
+        google: {
+            type: String, unique: true
+        },
+        facebook: {
+            type: String, unique: true
+        }
+    },
     // password: {type: String, required: true}, // validation
     dashboards: [dashboardSchema], // empty list is default?
 });
