@@ -10,6 +10,7 @@ const app = express()
 
 
 const dashboard = require("./route/dashboard")
+const userRoutes = require("./route/user")
 
 
 app.use(
@@ -23,6 +24,7 @@ app.use(express.json())
 app.use(logger);
 
 app.use('/api/dashboards', dashboard);
+app.use('/api/user', userRoutes);
 
 
 app.get("/api/public", (req, res) => {
