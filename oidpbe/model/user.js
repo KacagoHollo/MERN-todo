@@ -17,19 +17,10 @@ const userSchema = new mongoose.Schema({ // authenticateToken
     // googleId: {type: String, required: true, unique: true}, // validation
     providers: {
         google: {
-            type: String,
-            sparse: true,
-            unique: true
-        },
-        github: {
-            type: String,
-            sparse: true,
-            unique: true
+            type: String, unique: true
         },
         facebook: {
-            type: String,
-            sparse: true,
-            unique: true
+            type: String, unique: true
         }
     },
     // password: {type: String, required: true}, // validation

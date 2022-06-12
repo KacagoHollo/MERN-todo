@@ -1,24 +1,22 @@
 const { default: axios } = require("axios")
 
-const http = () => 
+const http = baseUrl => 
 {
     const instance = axios.create({
         baseURL: baseUrl || '',
         timeout: 3000,
     });
 
-    const post = async (...params) => {
+    const post = async (url, body) => {
         try {
-           const response = await instance.post(...params);
-           console.log("Body:", response.body)
+           const response = await instance.post(url, body);
            return response;
         } catch(err) {
-            if (!err.response) return err;
             console.log(err);
             return err.response;
         }
     }
-    return { post, get, _instance: instance };
+    return { post };
 }
 
-module.exports = http(); 
+module.exports = http; 
