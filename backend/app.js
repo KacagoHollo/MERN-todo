@@ -1,8 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-
+require('express-async-errors');
 
 const { logger } = require("./middleware/logger")
+const morgan = require("morgan");
 const auth = require("./middleware/auth")
 const { errorHandler } = require("./middleware/errorHandler")
 
@@ -15,13 +16,16 @@ const userRoutes = require("./route/user")
 
 app.use(
   cors({
-      origin: process.env.APP_URL
+      origin: process.env.APP_URL,
+      optionsSuccessStatus: 200 // some legacy browsers (IE11, various SmartTVs) choke on 204
   })
 );
 
 app.use(express.json())
-
-app.use(logger);
+// app.use(logger); //minden hívásnál automatikusan lefut ez a middleware
+app.use(morgan(":method :url :status :res[content-length] - :response-time ms")); // use this middleware on every request, logger
+// app.use(auth); //de ezt nem akarom minden endpoint hívásnál meghívni, ezért elehlyezhetem másként, a (req, res) elé
+// app.use(auth()); //így is használható amúgy te csicskagyász
 
 app.use('/api/dashboards', dashboard);
 app.use('/api/user', userRoutes);
@@ -39,7 +43,7 @@ app.get("/api/private", auth({block: true}), (req, res) => {
 
 app.get("/api/anonymus", auth({block: false}), (req , res) => {
   if (!res.locals.userId) return res.send("Hello public") 
-  res.send(`Hello anonymus id: ${res.locals.userId}`)
+  res.send(`Hello anonymus id: ${res.locals.user.userId}`)
 })
 
 // const myBusinessLogic = (req, res) => {

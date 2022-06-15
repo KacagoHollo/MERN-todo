@@ -1,9 +1,8 @@
 const { default: axios } = require("axios")
 
-const http = () => 
-{
+const http = () => {
     const instance = axios.create({
-        baseURL: baseUrl || '',
+        baseURL: '',
         timeout: 3000,
     });
 
@@ -18,7 +17,18 @@ const http = () =>
             return err.response;
         }
     }
-    return { post, get, _instance: instance };
+    const get = async (...params) => {
+        try {
+            const response = await instance.get(...params);
+            return response;
+        } catch (error) {
+            console.log('(get) error status: ' + error.response.status);
+            console.log('(get) error data: ' + error.response.data);
+            return error.response;
+        }
+    }
+    return { post, get, _instance: instance }
+    //privátként exportáljuk az instancet, így jelöljük
 }
 
 module.exports = http(); 

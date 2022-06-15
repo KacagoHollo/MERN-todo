@@ -16,15 +16,15 @@ router.post('/login', auth({block: false}), async (req, res) => {
     const provider = payload.provider;
     if (!code || !provider) return res.sendStatus(400);
 
-    if (!Object.keys(config).includes(provider)) return res.status(400).send("Wrong payload")
+    if (!Object.keys(config.auth).includes(provider)) return res.status(400).send("Wrong payload")
 
 
     const response = await http.post(config.auth[provider].token_endpoint, {
-        code: code,
-        client_id: config.auth[provider].client_id,
-        client_secret: config.auth[provider].client_secret,
-        redirect_uri: config.auth[provider].redirect_uri,
-        grant_type: config.auth[provider].grant_type,
+        "code": code,
+        "client_id": config.auth[provider].client_id,
+        "client_secret": config.auth[provider].client_secret,
+        "redirect_uri": config.auth[provider].redirect_uri,
+        "grant_type": config.auth[provider].grant_type,
     },
         {
             headers: {
@@ -41,10 +41,8 @@ router.post('/login', auth({block: false}), async (req, res) => {
     const onlyOauth = !response.data.id_token;
     if (onlyOauth) {
         let accesToken = response.data.access_token;
-        const userResponse = await http.post(
-            config.auth[provider].user_endpoint, 
-            {}, 
-            {
+        const userResponse = await http.get(
+            config.auth[provider].user_endpoint, {
                 headers: {
                     authorization: "Bearer " + accesToken,
                 },
@@ -54,6 +52,7 @@ router.post('/login', auth({block: false}), async (req, res) => {
         if (response.status !== 200) return res.sendStatus(401);
         const id = config.auth[provider].user_id
         oId = userResponse.data[id];
+        // oId = userResponse.data.id;
     } else {
         const decoded = jwt.decode(response.data.id_token);
         if (!decoded) return res.sendStatus(500)
@@ -73,17 +72,17 @@ router.post('/login', auth({block: false}), async (req, res) => {
         //ez volt a findoneAndUpdate-el
         // { providers: {[provider]: oId} }, 
         // { upsert: true,  new: true }
-    );
+    ); // already "registered" user in DB
 
     if (user && res.locals.user?.providers) {
-        user.providers = {...user.providers, ...res.locals.user.providers};
+        user.providers = {...user.providers, ...res.locals.user.providers}; // append a new provider to its existing one
         user = await user.save()
     }
 
     // ? = optional chaining
     const sessionToken = jwt.sign({userID: user?._id, providers: user ? user.providers : { [provider]: oId }}, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    res.json({ sessionToken });
+    res.status(200).json({ sessionToken });
     // let newUser;
     // if (!user) {
     //     User.create({
@@ -100,9 +99,9 @@ router.post("/create", auth({block: true}), async (req, res) => {
     if (!req.body?.username) return res.sendStatus(400);
     const user = await User.create({username: req.body.username, providers: res.locals.user.providers});
 
-    const sessionToken = jwt.sign({userID: user._id, providers: user.providers }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const sessionToken = jwt.sign({"userID": user._id, "providers": user.providers }, process.env.JWT_SECRET, { expiresIn: "1h" });
 
-    res.json({ sessionToken });
+    res.status(200).json({ sessionToken });
 });
 
 module.exports = router;

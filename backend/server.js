@@ -4,7 +4,7 @@ const app = require('./app')
 
 const port = process.env.PORT
 
-mongoose.connect('mongodb://localhost:27017/templateBE', {
+mongoose.connect(process.env.CONNECTION_STRING, {
   useNewUrlParser: true,
 useUnifiedTopology: true,
 // useFindAndModify: false

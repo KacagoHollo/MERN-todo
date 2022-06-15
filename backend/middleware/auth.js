@@ -1,13 +1,13 @@
+const jwt = require('jsonwebtoken');
 
-const auth = (middlewareParams) => (req, res, next) => {
-        // console.log("Authentication");
-        // let a;
-        // console.log(a.b.c)
-        const userId = req.header('authorization');
-        res.locals.userId = userId;
-        console.log(userId)
-        if (middlewareParams.block && !res.locals.userId) return res.sendStatus(401)
-        next();
+const auth = ({ block }) => (req, res, next) => {
+        const token = req.header('authorization');
+        jwt.verify(token, process.env.JWT_SECRET, (error, user) => {
+            if (error && block) return res.sendStatus(401);
+            // if (block && !user) return res.sendStatus(401);
+            res.locals.user = user;
+            next();
+        });
     }
 
-    module.exports = auth
+module.exports = auth;
