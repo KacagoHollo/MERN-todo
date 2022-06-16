@@ -37,13 +37,13 @@ app.get("/api/public", (req, res) => {
 })
 app.get("/api/private", auth({block: true}), (req, res) => {
   // console.log('private')
-  res.send(`Hello private id: ${res.locals.userId}`)
+  res.send(`Hello private id: ${res.locals.userID}`)
   
 })
 
 app.get("/api/anonymus", auth({block: false}), (req , res) => {
-  if (!res.locals.userId) return res.send("Hello public") 
-  res.send(`Hello anonymus id: ${res.locals.user.userId}`)
+  if (!res.locals.userID) return res.send("Hello public") 
+  res.send(`Hello anonymus id: ${res.locals.user.userID}`)
 })
 
 // const myBusinessLogic = (req, res) => {

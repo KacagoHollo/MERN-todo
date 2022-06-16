@@ -34,7 +34,7 @@ router.post('/login', auth({block: false}), async (req, res) => {
         // scope: "openid" 
     ); 
 
-    if (!response) return res.sendStatus(500);
+    if (!response) return res.sendStatus(504);
     if (response.status !== 200) return res.sendStatus(401);
     
     let oId;
@@ -48,7 +48,7 @@ router.post('/login', auth({block: false}), async (req, res) => {
                 },
             }
         );
-        if (!response) return res.sendStatus(500)
+        if (!response) return res.sendStatus(502)
         if (response.status !== 200) return res.sendStatus(401);
         const id = config.auth[provider].user_id
         oId = userResponse.data[id];
@@ -80,7 +80,7 @@ router.post('/login', auth({block: false}), async (req, res) => {
     }
 
     // ? = optional chaining
-    const sessionToken = jwt.sign({userID: user?._id, providers: user ? user.providers : { [provider]: oId }}, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const sessionToken = jwt.sign({"userID": user?._id, "providers": user ? user.providers : { [provider]: oId }}, process.env.JWT_SECRET, { expiresIn: "1h" });
 
     res.status(200).json({ sessionToken });
     // let newUser;

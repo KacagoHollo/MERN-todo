@@ -9,6 +9,7 @@ import Home from './pages/Home';
 import About from './pages/About';
 import Profile from './pages/Profile';
 import Callback from './pages/Callback';
+import Protected from './components/Protected';
 
 
 function App() {
@@ -22,6 +23,11 @@ function App() {
           <Route path='/' element={<Home />} />
           <Route path='/about' element={<About />} />
           <Route path='/profile' element={<Profile />} />
+          <Route path='profile' element={(
+            <Protected> 
+              <Profile />
+            </Protected>
+          )}/>
           <Route path='/callback' element={<Callback />} />
         </Routes>
       </div>

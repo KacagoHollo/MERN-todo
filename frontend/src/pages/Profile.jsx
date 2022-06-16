@@ -6,6 +6,11 @@ import { useAuth } from '../providers/auth';
 const Profile = () => {
     const {counter, increment, decrement} = useCounter("Profile");
 
+    // useEffect(() => {
+    //   if (!token) {
+    //     navigate('/');
+    //   }
+    // }, [])
     
     const {
         value,
@@ -13,12 +18,12 @@ const Profile = () => {
         decrement: down
     } = useGlobalCounter();
 
-    const {token} = useAuth()
+    const {token} = useAuth();
 
   return (
     <>
         <div>Profile</div>
-        {token ? <p>Logged in</p> : <p>Anonymus</p>}
+        <p>{token ? "Logged in": "Annonymus"}</p>
         <button onClick={decrement}>-</button>
         <button onClick={increment}>+</button>
         <p>Value: {counter}</p>
