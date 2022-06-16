@@ -25,14 +25,14 @@ const AuthProvider = ({ children }) => {
         searchParams.append("prompt", "select_account");
 
         const fullUrl = googleBaseUrl + "?" + searchParams.toString();
-        window.open(fullUrl)
+        window.open(fullUrl, "_self")
     };
 
     const login = async (code, provider) => {
         try {
-            const response = await http.post('http://localhost:4000/api/login/user', {'code': code, "provider": provider});
-            setToken(response.data.token);
-            localStorage.setItem("token", response.data.token)
+            const response = await http.post('http://localhost:4000/api/user/login', {'code': code, "provider": provider});
+            setToken(response.data.sessionToken);
+            localStorage.setItem("token", response.data.sessionToken)
         } catch (error) {
             setToken(null)
             localStorage.removeItem("token");
@@ -41,6 +41,7 @@ const AuthProvider = ({ children }) => {
 
     const logout = () => {
         setToken(null)
+        localStorage.removeItem("token");
     };
     const contextValue = { token, auth, login, logout };
   return (

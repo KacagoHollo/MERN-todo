@@ -18,7 +18,7 @@ router.post('/login', auth({block: false}), async (req, res) => {
 
     if (!Object.keys(config.auth).includes(provider)) return res.status(400).send("Wrong payload")
 
-
+    
     const response = await http.post(config.auth[provider].token_endpoint, {
         "code": code,
         "client_id": config.auth[provider].client_id,

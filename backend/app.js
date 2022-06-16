@@ -1,6 +1,6 @@
 const express = require('express');
-const cors = require('cors');
 require('express-async-errors');
+const cors = require('cors');
 
 const { logger } = require("./middleware/logger")
 const morgan = require("morgan");

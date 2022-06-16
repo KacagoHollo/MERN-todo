@@ -6,6 +6,7 @@ const config = {
             client_secret: process.env.GOOGLE_CLIENT_SECRET,
             redirect_uri: process.env.GOOGLE_REDIRECT_URI,
             token_endpoint: "https://oauth2.googleapis.com/token",
+            grant_type: "authorization_code",
             user_endpoint: null,
             user_id: null,
     
@@ -25,4 +26,6 @@ const config = {
         //     tokenEndpoint: ""
         // }
     }
+    
 }
+    module.exports = config;

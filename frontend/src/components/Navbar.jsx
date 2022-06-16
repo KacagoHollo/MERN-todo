@@ -18,7 +18,12 @@ const Navbar = () => {
           <Link to='/profile'>Profile</Link>
         </div>
         <div className='right'>
-          <button>Login</button>
+          { token ? 
+            <button onClick={logout}>Logout</button> 
+            :
+            <button onClick={auth}>Login</button>
+            
+          }
         </div>
     </nav>
   )

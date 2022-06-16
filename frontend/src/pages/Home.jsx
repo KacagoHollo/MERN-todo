@@ -5,14 +5,13 @@ import {useAuth} from '../providers/auth'
 
 const Home = () => {
     const {counter, increment, decrement} = useCounter("Home");
-    const {token} = useAuth();
+    const {token, auth } = useAuth();
     const {
         value,
         increment: up,
         decrement: down
         } = useGlobalCounter();
-        const { auth } = useAuth()
-
+    
     return (
       <>
           <div>Home</div>

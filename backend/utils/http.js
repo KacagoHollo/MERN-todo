@@ -12,8 +12,8 @@ const http = () => {
            console.log("Body:", response.body)
            return response;
         } catch(err) {
+            console.log(err, "Mi van már??????");
             if (!err.response) return err;
-            console.log(err);
             return err.response;
         }
     }
