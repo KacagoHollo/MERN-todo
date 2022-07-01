@@ -1,5 +1,4 @@
-import { useState, useEffect } from "react";
-import { useContext, createContext } from "react";
+import { useState, useEffect, useContext, createContext  } from "react";
 import http from 'axios';
 import jwt from 'jwt-decode'
 import { toDoApi } from "../api/toDoApi";
@@ -8,28 +7,20 @@ import config from '../app.config'
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
-    const [token, setToken] = useState(null);
-    const [user, setUser] = useState(null);
+  const [token, setToken] = useState(null);
+  const [user, setUser] = useState(null);
+  const { post } = toDoApi();
  
-    useEffect(() => {
-      const tokenInStorage = localStorage.getItem("token");
-      if (tokenInStorage) {
-        setToken(tokenInStorage);
-        setUser(jwt(tokenInStorage))
-      }
+    const auth = (provider) => {
+        const googleBaseUrl = config[provider].base_url;
 
-    }, [])
-    
-
-    const auth = () => {
-        const googleBaseUrl = "https://accounts.google.com/o/oauth2/v2/auth";
         const searchParams = new URLSearchParams();
-        searchParams.append("client_id", "423125049963-vnhlm59vvirdjsquu0efhqvq5u91orks.apps.googleusercontent.com");
+        searchParams.append("response_type", "code");
+        searchParams.append("client_id", config[provider].client_id);
         searchParams.append("scope", "openid");
         searchParams.append("redirect_uri",
-        window.location.origin + "/callback"
+        window.location.origin + "/callback/" + provider
         );
-        searchParams.append("response_type", "code");
         searchParams.append("prompt", "select_account");
 
         const fullUrl = googleBaseUrl + "?" + searchParams.toString();
@@ -38,22 +29,42 @@ const AuthProvider = ({ children }) => {
 
     const login = async (code, provider) => {
         try {
-            const response = await http.post('http://localhost:4000/api/user/login', {'code': code, "provider": provider});
-            setToken(response.data.sessionToken);
-            localStorage.setItem("token", response.data.sessionToken)
-            setUser(jwt(response.data.sessionToken));
+            const response = await http.post('/user/login', {'code': code, "provider": provider});
+            setToken(response.data.token);
+            localStorage.setItem("token", response.data.token);
+            setUser(jwt(response.data.token));
         } catch (error) {
           console.log(error);
-          setToken(null)
           localStorage.removeItem("token");
+          setToken(null);
         }
-    }
+    };
 
     const logout = () => {
-        setToken(null)
-        localStorage.removeItem("token");
+      localStorage.removeItem("token");
+      setToken(null);
     };
-    const contextValue = { token, auth, login, logout, user };
+
+    const register = async (username) => {
+      const response = await post("/user/create", { username });
+  
+      if (response?.status === 200) {
+        setToken(response.data.token);
+        localStorage.setItem("token", response.data.token);
+        setUser(jwt(response.data.token));
+      }
+    };
+    const contextValue = { token, auth, login, logout, user, register };
+
+    useEffect(() => {
+      const tokenInStorage = localStorage.getItem("token");
+      if (tokenInStorage) {
+        setToken(tokenInStorage);
+        setUser(jwt(tokenInStorage));
+      }
+
+    }, [])
+    
   return (
     
     <AuthContext.Provider value={contextValue}>
@@ -63,9 +74,9 @@ const AuthProvider = ({ children }) => {
 };
 
 const useAuth = () => {
-    const context = useContext(AuthContext);
-    if (!context) throw new Error("add AuthProvider to root");
+    const context = useContext(AuthContext); // read the context and subscribe to its changes
+    if (!context) throw new Error("add AuthProvider to root"); // dev help only
     return context;
-}
+};
 
 export {AuthProvider, useAuth};
