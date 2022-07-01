@@ -9,7 +9,18 @@ const config = {
             grant_type: "authorization_code",
             user_endpoint: null,
             user_id: null,
+            scope: "openid"
     
+        },
+
+        oid: {
+            client_id: process.env.OID_CLIENT_ID,
+            client_secret: process.env.OID_CLIENT_SECRET,
+            redirect_uri: process.env.OID_REDIRECT_URI,
+            token_endpoint: "https://localhost:4001/token",
+            grant_type: "authorization_code",
+            scope: "openid"
+
         },
         github: {
             client_id: process.env.GITHUB_CLIENT_ID,

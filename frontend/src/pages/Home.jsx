@@ -12,6 +12,8 @@ const Home = () => {
         decrement: down
         } = useGlobalCounter();
     
+    
+
     return (
       <>
           <div>Home</div>
@@ -23,7 +25,7 @@ const Home = () => {
           <button onClick={up}>+</button>
           <p>Global value: {value}</p>
 
-          <button onClick={auth}>Login with Google</button>
+         {token ? "Welcome" : (<button onClick={auth}>Login with Google</button>)}
       </>
     )
 }

@@ -34,22 +34,22 @@ router.post('/login', auth({block: false}), async (req, res) => {
         // scope: "openid" 
     ); 
 
-    if (!response) return res.sendStatus(504);
+    if (!response) return res.status(500).send("Token provider error");
     if (response.status !== 200) return res.sendStatus(401);
     
     let oId;
     const onlyOauth = !response.data.id_token;
     if (onlyOauth) {
         let accesToken = response.data.access_token;
-        const userResponse = await http.get(
+        const userResponse = await http.post(
             config.auth[provider].user_endpoint, {
                 headers: {
                     authorization: "Bearer " + accesToken,
                 },
             }
         );
-        if (!response) return res.sendStatus(502)
-        if (response.status !== 200) return res.sendStatus(401);
+        if (!userResponse) return res.sendStatus(500)
+        if (userResponse.status !== 200) return res.sendStatus(401);
         const id = config.auth[provider].user_id
         oId = userResponse.data[id];
         // oId = userResponse.data.id;

@@ -11,11 +11,12 @@ function Callback() {
             const params = new URLSearchParams(window.location.search);
             const code = params.get("code");
             if (code) {
+              console.log(code)
                 await login(code, "google");
             }
-            navigate("/");
-        }
-        loginWithCode();
+            navigate("/profile");
+          }
+          loginWithCode();
 
       // eslint-disable-next-line
     }, []);

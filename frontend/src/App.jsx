@@ -10,6 +10,7 @@ import About from './pages/About';
 import Profile from './pages/Profile';
 import Callback from './pages/Callback';
 import Protected from './components/Protected';
+import Register from './pages/Register';
 
 
 function App() {
@@ -22,13 +23,17 @@ function App() {
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/about' element={<About />} />
-          <Route path='/profile' element={<Profile />} />
-          <Route path='profile' element={(
+          <Route path='/profile' element={(
             <Protected> 
               <Profile />
             </Protected>
           )}/>
           <Route path='/callback' element={<Callback />} />
+          <Route path='/register' element={
+            <Protected>
+              <Register />
+            </Protected>
+          } />
         </Routes>
       </div>
   );
